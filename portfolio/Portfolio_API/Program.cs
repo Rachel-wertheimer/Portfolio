@@ -31,14 +31,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IGitHubService, GitHubService>();
 builder.Services.Decorate<IGitHubService, CachingGitHubService>();
 
-//builder.Services.AddSingleton(sp =>
-//{
-//    var options = sp.GetRequiredService<IOptions<GitHubIntegrationOption>>().Value;
-//    return new GitHubClient(new ProductHeaderValue("PortfolioApp"))
-//    {
-//        Credentials = new Credentials(options.Token)
-//    };
-//});
+
 
 var app = builder.Build();
 
