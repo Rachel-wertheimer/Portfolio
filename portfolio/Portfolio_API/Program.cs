@@ -19,13 +19,14 @@ builder.Services.Configure<GitHubIntegrationOption>(
 builder.Services.AddGitHubIntegration(options => builder.Configuration.GetSection(nameof(GitHubIntegrationOption)).Bind(options));
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("AllowClient", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("https://portfolioclient-3d8e.onrender.com")
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
 });
+
 
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IGitHubService, GitHubService>();
@@ -43,7 +44,8 @@ var app = builder.Build();
 //}
 
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+app.UseCors("AllowClient");
+
 
 app.UseAuthorization();
 
