@@ -16,6 +16,12 @@ builder.Services.Configure<GitHubIntegrationOption>(
 builder.Services.AddGitHubIntegration(options =>
     builder.Configuration.GetSection(nameof(GitHubIntegrationOption)).Bind(options));
 
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+    .AddJsonFile("/etc/secrets/github-secret.json", optional: true, reloadOnChange: true); // חשוב!
+ד
+
 // CORS - חשוב מאוד שכתובת ה-Origin תהיה מדויקת
 builder.Services.AddCors(options =>
 {
