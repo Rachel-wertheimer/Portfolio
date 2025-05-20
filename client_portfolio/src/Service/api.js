@@ -1,8 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://localhost:44355/api/Portfolio';
-
-
+const API_BASE_URL = 'https://portfolioserver-a7aw.onrender.com/api/Portfolio';
 
 export const getRepositories = async () => {
   const response = await axios.get(`${API_BASE_URL}`);
