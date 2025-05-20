@@ -4,19 +4,19 @@ using Portfolio_service;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services
+// הוספת שירותים
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Config
+// קונפיגורציה
 builder.Services.Configure<GitHubIntegrationOption>(
     builder.Configuration.GetSection("GitHubIntegrationOption"));
 
 builder.Services.AddGitHubIntegration(options =>
     builder.Configuration.GetSection(nameof(GitHubIntegrationOption)).Bind(options));
 
-// CORS
+// CORS - חשוב מאוד שכתובת ה-Origin תהיה מדויקת
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowClient", policy =>
@@ -34,7 +34,7 @@ builder.Services.Decorate<IGitHubService, CachingGitHubService>();
 
 var app = builder.Build();
 
-// Global error logging (לבדיקת שגיאות 500)
+// Middleware לטיפול בשגיאות גלובלית
 app.Use(async (context, next) =>
 {
     try
@@ -44,20 +44,24 @@ app.Use(async (context, next) =>
     catch (Exception ex)
     {
         Console.WriteLine($"Unhandled exception: {ex.Message}");
-        throw;
+        context.Response.StatusCode = 500;
+        await context.Response.WriteAsync("Internal Server Error");
     }
 });
 
-// Middleware
+// הפעלת Swagger
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
-app.UseCors("AllowClient"); // ? חשוב שיהיה לפני Authorization
+
+// שים לב: UseCors חייב להיות לפני UseAuthorization
+app.UseCors("AllowClient");
 
 app.UseAuthorization();
 
 app.MapControllers();
+
 app.MapGet("/", () => "portfolio server running");
 
 app.Run();
